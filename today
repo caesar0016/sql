@@ -1,0 +1,104 @@
+Begin Transaction
+--This is Step 3
+
+	update Students
+	set Balance = Balance - 1000
+	where S_ID = 20
+
+	update Students
+	set Balance = Balance - 1000
+	where S_ID = 70
+	
+	insert into Payment values
+	(2, '2020-07-21', 1000, 20),
+	(3, '2020-07-21', 1000, 70);
+
+	Commit
+
+--This is the Step 4
+
+Begin Transaction
+--15k payment
+	insert into Payment values
+	(4, '2020-07-28', 15000, 90)
+
+	Commit
+
+Begin Transaction
+
+	update Students
+	set Balance = Balance - 15000
+	where S_ID = 50
+
+	Rollback
+
+Begin Transaction
+
+	update Students
+	set Balance = Balance - 15000
+	where S_ID = 90
+	
+	commit
+
+Begin Transaction
+
+	--Medusa paying 15k
+
+	DECLARE @PaymentMedusa DECIMAL(10, 2);
+	DECLARE @BalanceMedusa DECIMAL(10, 2);
+
+	SET @PaymentMedusa = 15000;
+
+	INSERT INTO Payment
+	VALUES (4, '2020-07-28', @PaymentMedusa, 90)
+
+	SET @BalanceMedusa = (SELECT Balance FROM Students WHERE S_ID = 20);
+
+	IF @PaymentMedusa > @BalanceMedusa
+	BEGIN
+		PRINT 'The transaction could not proceed, the payment that has been received was overpaid. Please try again.';
+		PRINT 'Your Tuition Balance: ' + CAST(@BalanceMedusa AS VARCHAR) + ' | Your Payment: ' + CAST(@PaymentMedusa AS VARCHAR);
+	END
+	ELSE
+	BEGIN
+		PRINT 'Success'
+	End;
+	commit
+
+Begin Transaction 
+	
+	Declare @datePayment date
+	Declare @dueDate date
+	declare @Tuition decimal(10,2)
+
+	set @dueDate =  '2020-08-05'
+	set @datePayment =  '2020-08-05'
+	set @Tuition = (Select Tuition_Fee from Students where S_ID = 50);
+
+	if @datePayment <= @dueDate
+		begin
+
+			INSERT INTO Payment
+			VALUES (6, @datePayment, 15300, 50)
+
+			update Students
+			set Balance = Balance - 18000 where S_ID = 50
+
+			update Students
+			set Tuition_Fee = @Tuition * 0.85
+			where S_ID = 50
+
+		end
+
+		else 
+			begin
+			print'Not allowed for discount'
+			end
+
+
+			rollback
+
+
+	select * from Students
+
+	select * from Payment
