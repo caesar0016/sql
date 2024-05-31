@@ -9,4 +9,7 @@ insert into Records(LastName, FirstName, Age, Gender, Level)values
 ('Dela Cruz', 'Philip', 16, 'Male', 'Freshman'),
 ('Ramos', 'Loisa', 21, 'Female', 'Senior'),
 ('Galang', 'Orlean', 18, 'Male', 'Junior'),
+('Detera', 'Chin', 16, 'Female', 'Freshman'),
+('Ramos', 'Loisa', 21, 'Female', 'Senior'),
+('Galang', 'Orlean', 18, 'Male', 'Junior'),
 ('Detera', 'Chin', 16, 'Female', 'Freshman');
