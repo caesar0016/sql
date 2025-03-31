@@ -102,3 +102,87 @@ Begin Transaction
 	select * from Students
 
 	select * from Payment
+
+
+
+
+package com.example.practice1;
+
+import android.content.DialogInterface;
+import android.os.Bundle;
+import android.view.View;
+import android.widget.ArrayAdapter;
+import android.widget.Spinner;
+import android.widget.Toast;
+
+import androidx.activity.EdgeToEdge;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.graphics.Insets;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowInsetsCompat;
+
+import com.example.practice1.databinding.ActivityMainBinding;
+
+public class MainActivity extends AppCompatActivity {
+    ActivityMainBinding binding;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        EdgeToEdge.enable(this);
+        binding = ActivityMainBinding.inflate(getLayoutInflater());
+        View view = binding.getRoot();
+        setContentView(view);
+        ArrayAdapter<CharSequence> adapterSpinner = ArrayAdapter.createFromResource(
+                this,
+                R.array.role_array,
+                android.R.layout.simple_spinner_item
+        );
+        adapterSpinner.setDropDownViewResource(android.R.layout.select_dialog_singlechoice);
+        binding.spinnerRole.setAdapter(adapterSpinner);
+
+
+        binding.btnClick.setOnClickListener(v->{
+            String role = binding.spinnerRole.getSelectedItem().toString();
+            binding.tvSelect.setText(role);
+        });
+
+        binding.btnShow.setOnClickListener(v -> {
+            showDialog();
+        });
+
+
+    }
+    private void showDialog(){
+        // Inflate the custom layout for the dialog
+        View dialogView = getLayoutInflater().inflate(R.layout.user_item, null);
+
+        // Initialize the spinner inside the dialog using findViewById
+        Spinner spinnerRoleDialog = dialogView.findViewById(R.id.spinnerRole);
+
+        // Set the adapter for the spinner in the dialog
+        ArrayAdapter<CharSequence> adapterSpinner = ArrayAdapter.createFromResource(
+                this,
+                R.array.role_array,
+                android.R.layout.simple_spinner_item);
+        adapterSpinner.setDropDownViewResource(android.R.layout.select_dialog_singlechoice);
+        spinnerRoleDialog.setAdapter(adapterSpinner);
+
+        // Set up the AlertDialog builder and assign the custom dialog view
+        AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+        builder.setView(dialogView)
+                .setPositiveButton("Update", (dialog, which) -> {
+                    String selectedRole = spinnerRoleDialog.getSelectedItem().toString();
+                    Toast.makeText(MainActivity.this, "Selected Role: " + selectedRole, Toast.LENGTH_SHORT).show();
+                })
+                .setNegativeButton("Cancel", (dialog, which) -> {
+                    Toast.makeText(MainActivity.this, "Cancel", Toast.LENGTH_SHORT).show();
+                });
+
+        // Create and show the dialog
+        AlertDialog dialog = builder.create();
+        dialog.show();
+    }
+
+}
